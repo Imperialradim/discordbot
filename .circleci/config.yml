@@ -1,26 +1,24 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
-version: 2.1
+import discord
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+TOKEN = 'ODIxMDEwOTIwMTIwNjQ3NzEx.YE9gAQ.9egUqqdHITVpM4OkDzvfXuApoNE'
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
-workflows:
-  say-hello-workflow:
-    jobs:
-      - say-hello
+client = discord.Client()
+
+@client.event
+async def on_ready():
+    print('We have successfully loggged in as {0.user}'.format(client))
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.lower() == 'hello':
+        await message.channel.send(f'Hello, {message.author.display_name}!')
+        return
+
+    if message.content.lower() == 'bye':
+        await message.channel.send(f'See you later, {message.author.display_name}!')
+        return
+
+client.run(TOKEN)
