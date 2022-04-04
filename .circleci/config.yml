@@ -1,24 +1,23 @@
-import discord
+version: 2.1
+executors:
+  my-custom-executor:
+    docker:
+      - image: cimg/base:stable
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/Imperialradim/discordbot/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+jobs:
+  my-job-name:
 
-TOKEN = 'ODIxMDEwOTIwMTIwNjQ3NzEx.YE9gAQ.9egUqqdHITVpM4OkDzvfXuApoNE'
+    executor: my-custom-executor
+    steps:
+      - checkout
+      - run: |
+          # echo Hello, World!
 
-client = discord.Client()
-
-@client.event
-async def on_ready():
-    print('We have successfully loggged in as {0.user}'.format(client))
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.lower() == 'hello':
-        await message.channel.send(f'Hello, {message.author.display_name}!')
-        return
-
-    if message.content.lower() == 'bye':
-        await message.channel.send(f'See you later, {message.author.display_name}!')
-        return
-
-client.run(TOKEN)
+workflows:
+  my-custom-workflow:
+    jobs:
+      - my-job-name
